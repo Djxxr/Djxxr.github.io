@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Tokeny kolorów ─────────────────────────────────────────── */
+:root {
+  --bg: #f4f2fb;
+  --fg: #17151f;
+  --fg-muted: #6b6880;
+  --fg-faint: #a19eb4;
+
+  --glass: rgb(255 255 255 / 0.55);
+  --glass-strong: rgb(255 255 255 / 0.72);
+  --glass-border: rgb(255 255 255 / 0.8);
+  --glass-edge: rgb(23 21 31 / 0.06);
+  --shadow: 0 1px 1px rgb(23 21 31 / 0.03), 0 8px 24px -6px rgb(76 60 140 / 0.14),
+    0 32px 64px -24px rgb(76 60 140 / 0.18);
+
+  --accent: #7c5cff;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0c0b14;
+  --fg: #f3f1fa;
+  --fg-muted: #a09cb6;
+  --fg-faint: #67637c;
+
+  --glass: rgb(28 26 40 / 0.5);
+  --glass-strong: rgb(34 32 48 / 0.7);
+  --glass-border: rgb(255 255 255 / 0.09);
+  --glass-edge: rgb(0 0 0 / 0.3);
+  --shadow: 0 1px 1px rgb(0 0 0 / 0.2), 0 8px 24px -6px rgb(0 0 0 / 0.4),
+    0 32px 64px -24px rgb(0 0 0 / 0.55);
+
+  --accent: #a48bff;
+  color-scheme: dark;
+}
+
+/* ── Baza ───────────────────────────────────────────────────── */
+html {
+  background: var(--bg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @apply font-sans antialiased;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  transition: background-color 0.6s var(--ease-soft), color 0.6s var(--ease-soft);
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* ── Komponenty ─────────────────────────────────────────────── */
+@utility glass {
+  background: var(--glass);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow), inset 0 1px 0 0 rgb(255 255 255 / 0.25);
+}
+
+@utility glass-strong {
+  background: var(--glass-strong);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow), inset 0 1px 0 0 rgb(255 255 255 / 0.3);
+}
+
+/* Delikatne ziarno nad tłem – „miękki”, analogowy wygląd */
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] .grain {
+  opacity: 0.08;
+}
+
+/* Statyczne tło dla osób z wyłączonymi animacjami / bez WebGL */
+.fallback-gradient {
+  background:
+    radial-gradient(60% 50% at 20% 20%, #c4b5fd 0%, transparent 60%),
+    radial-gradient(50% 50% at 85% 30%, #fbcfe8 0%, transparent 60%),
+    radial-gradient(60% 60% at 60% 90%, #bae6fd 0%, transparent 60%), var(--bg);
+}
+[data-theme="dark"] .fallback-gradient {
+  background:
+    radial-gradient(60% 50% at 20% 20%, #3b2a7a 0%, transparent 60%),
+    radial-gradient(50% 50% at 85% 30%, #5b1f4f 0%, transparent 60%),
+    radial-gradient(60% 60% at 60% 90%, #13406b 0%, transparent 60%), var(--bg);
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (pointer: fine) {
+  .has-custom-cursor,
+  .has-custom-cursor a,
+  .has-custom-cursor button {
+    cursor: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
